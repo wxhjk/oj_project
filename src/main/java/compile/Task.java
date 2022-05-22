@@ -1,24 +1,38 @@
 package compile;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
 import common.FileUtil;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 // 每次的 "编译 + 运行" 这个过程,被称为是一个 compile.Task
 public class Task {
     // 创建一组常量来约定临时文件的名字
     // 这个表示所有临时文件所在的目录
-    private static final String WORK_DIR = "./tmp/";
+    private String WORK_DIR = null;
     // 约定代码的类名
-    private static final String CLASS = "Solution";
+    private String CLASS = null;
     // 约定要编译的代码文件名
-    private static final String CODE = WORK_DIR + "Solution.java";
+    private String CODE = null;
     // 约定存放编译错误信息的文件名
-    private static final String COMPILE_ERROR = WORK_DIR + "compileError.txt";
+    private String COMPILE_ERROR = null;
     // 约定存放运行时的标准输出的文件名
-    private static final String STDOUT = WORK_DIR + "stdout.txt";
+    private String STDOUT = null;
     // 约定存放运行时的标准错误的文件名
-    private static final String STDERR = WORK_DIR + "stderr.txt";
+    private String STDERR = null;
+
+    public Task() {
+        // 在 Java 中使用 UUID 这个类就能生成一个 UUID 了
+        WORK_DIR = "./tmp/" + UUID.randomUUID().toString() + "/";
+        CLASS = "Solution";
+        CODE = WORK_DIR + "Solution.java";
+        COMPILE_ERROR = WORK_DIR + "compileError.txt";
+        STDOUT = WORK_DIR + "stdout.txt";
+        STDERR = WORK_DIR + "stderr.txt";
+    }
 
     // 这个 compile.Task 类提供的核心方法,就叫做 compileAndRun,编译+运行的意思
     // 参数: 要编译运行的 java 源代码
@@ -30,6 +44,13 @@ public class Task {
         if (!workDir.exists()) {
             // 创建多级目录
             workDir.mkdirs();
+        }
+        // 在这之前要先进行 安全性检验
+        if (!checkCodeSafe(question.getCode())) {
+            System.out.println("用户提交了不安全的代码!");
+            answer.setError(3);
+            answer.setReason("您提交的代码可能会危害到服务器,禁止运行!");
+            return answer;
         }
         // 1. 把 question 中的 code 写入到一个 .java 文件中
         FileUtil.writeFile(CODE,question.getCode());
@@ -67,6 +88,26 @@ public class Task {
         answer.setError(0);
         answer.setStdout(FileUtil.readFile(STDOUT));
         return answer;
+    }
+
+    private static boolean checkCodeSafe(String code) {
+        List<String> blackList = new LinkedList<>();
+        // 防止提交的代码运行恶意程序
+        blackList.add("Runtime");
+        blackList.add("exec");
+        // 禁止提交的代码读写文件
+        blackList.add("java.io");
+        // 禁止提交的代码访问网络
+        blackList.add("java.net");
+
+        for (String target : blackList) {
+            int pos = code.indexOf(target);
+            if (pos >= 0) {
+                // 找到任意的恶意代码特征,返回 false 表示不安全
+                return false;
+            }
+        }
+        return true;
     }
 
     public static void main(String[] args) {

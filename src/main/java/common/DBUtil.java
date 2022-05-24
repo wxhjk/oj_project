@@ -10,9 +10,10 @@ import java.sql.SQLException;
 
 public class DBUtil {
     // 需要封装和数据库之间的连接操作
-    private static final String URL = "jdbc:mysql://127.0.0.1:13306/oj_database?characterEncoding=utf-8&useSSL=false";
+    // 注意 本地数据库和 Linux 上的数据库的 密码,端口号区别,当前为 Linux
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/oj_database?characterEncoding=utf-8&useSSL=false";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "abc123";
+    private static final String PASSWORD = "";
 
     private static volatile DataSource dataSource = null;
 

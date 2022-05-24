@@ -222,9 +222,9 @@ public class ProblemDAO {
     }
 
     public static void main(String[] args) {
-//        testInsert();
+          testInsert();
 //        testSelectAll();
-//        testDelete(4);
+//        testDelete(3);
 //        testSelectOne(1);
     }
 }

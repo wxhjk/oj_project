@@ -37,6 +37,6 @@
 
     <packaging>war</packaging>
     <build>
-        <finalName>java_oj</finalName>
+        <finalName>oj_project</finalName>
     </build>
 </project>

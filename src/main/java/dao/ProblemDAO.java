@@ -2,7 +2,6 @@ package dao;
 
 import common.DBUtil;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -222,9 +221,6 @@ public class ProblemDAO {
     }
 
     public static void main(String[] args) {
-          testInsert();
-//        testSelectAll();
-//        testDelete(3);
-//        testSelectOne(1);
+        testSelectAll();
     }
 }

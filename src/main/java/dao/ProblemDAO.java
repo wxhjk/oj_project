@@ -221,6 +221,5 @@ public class ProblemDAO {
     }
 
     public static void main(String[] args) {
-        testSelectAll();
     }
 }
